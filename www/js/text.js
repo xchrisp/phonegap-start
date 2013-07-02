@@ -16,6 +16,7 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+<div id="map_canvas"></div>  
 var map; // กำหนดตัวแปร map ไว้ด้านนอกฟังก์ชัน เพื่อให้สามารถเรียกใช้งาน จากส่วนอื่นได้
 var my_Marker; // กำหนดตัวแปรสำหรับเก็บตัว marker
 var infowindow; // กำหนดตัวแปรสำหรับเก็บตัว popup แสดงรายละเอียดสถานที่
