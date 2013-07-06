@@ -1,40 +1,30 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>Untitled Document</title>
-<style type="text/css">
-html{
-	padding:0px;
-	margin:0px;
-}
-div#map_canvas{
-	margin:auto;
-	width:500px;
-	height:450px;
-	overflow:hidden;
+<style>
+div {
+position: relative;
+background-color: #abc;
+width: 40px;
+height: 40px;
+float: left;
+margin: 5px;
 }
 </style>
-
+<script src="http://code.jquery.com/jquery-latest.js"></script>
 </head>
+<body>
+<p><button id="go">Run »</button></p>
+<div class="block"></div>
+<script>
 
-<body onload="initialize()" onunload="GUnload()">
-
-<div id="map_canvas">
-</div> 
-
-
-<script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAAcNvUk-nhOGHxtqYjlYDTRRRn0sJCm-CFhvGa72HC9maIDPrX5RTjV4z1TYBiTrysASJhAHZCMDeQ_A" type="text/javascript"></script>
-<script type="text/javascript"> 
-function initialize() { 
-  if (GBrowserIsCompatible()) { 
-	var map = new GMap2(document.getElementById("map_canvas")); 
-	map.setCenter(new GLatLng(13.77436,100.53458), 5); 
-	map.setUIToDefault(); 
-  } 
-} 
-</script> 
-
+function test() {
+$(".block").animate({left: "+=50", opacity: 1}, 500 );
+   setTimeout(mycode, 2000);
+};
+$( "#go" ).click(function(){
+test();
+});
+</script>
 </body>
 </html>
