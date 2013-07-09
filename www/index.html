@@ -1,47 +1,59 @@
 <!DOCTYPE html>
 <html>
-<body>
-<p id="demo">Click the button to get your position:</p>
-<button onclick="getLocation()">Try It</button>
-<div id="mapholder"></div>
-<script>
-var x=document.getElementById("demo");
-function getLocation()
-  {
-  if (navigator.geolocation)
-    {
-    navigator.geolocation.getCurrentPosition(showPosition,showError);
-    }
-  else{x.innerHTML="Geolocation is not supported by this browser.";}
-  }
-
-function showPosition(position)
-  {
-  var latlon=position.coords.latitude+","+position.coords.longitude;
-
-  var img_url="http://maps.googleapis.com/maps/api/staticmap?center="
-  +latlon+"&zoom=14&size=400x300&sensor=false";
-  document.getElementById("mapholder").innerHTML="<img src='"+img_url+"'>";
-  }
-
-function showError(error)
-  {
-  switch(error.code) 
-    {
-    case error.PERMISSION_DENIED:
-      x.innerHTML="User denied the request for Geolocation."
-      break;
-    case error.POSITION_UNAVAILABLE:
-      x.innerHTML="Location information is unavailable."
-      break;
-    case error.TIMEOUT:
-      x.innerHTML="The request to get user location timed out."
-      break;
-    case error.UNKNOWN_ERROR:
-      x.innerHTML="An unknown error occurred."
-      break;
-    }
-  }
-</script>
-</body>
+    <head>
+        <meta charset="utf-8">
+        <meta name=viewport content="user-scalable=no,width=device-width" />
+        <link rel="stylesheet" href="http://code.jquery.com/mobile/1.3.1/jquery.mobile-1.3.1.min.css" />
+        <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+        <script src="http://code.jquery.com/mobile/1.3.1/jquery.mobile-1.3.1.min.js"></script>
+    </head>
+    <body>
+        <div data-role=page id=home>
+            <div data-role=header data-theme="b"><h1>พิกัด GPS</h1></div>
+ 
+            <div data-role=content>
+                <span> สถานะ : </span> <span id=state></span> <br />
+                <span> เวลา : </span> <span id=time></span> <br />
+                <span> Latitude : </span> <span id=lat></span> <br />
+                <span> Longitude : </span> <span id=lng></span> <br />
+            </div>
+            <div align="center">
+                <input data-theme="c" type="button" name="btn_start" value="Start" id="btn_start" data-inline="true" data-icon="check">
+                <input data-theme="e" type="button" name="btn_stop" value="Stop" id="btn_stop" data-inline="true" data-icon="delete">
+            </div>
+            <div align="center">
+                <div id="out_put" style="width:99%; height:300px; overflow:scroll; border:1px solid #000;"></div>
+            </div>
+            <br>
+             <div data-role=footer data-theme="b" data-position="fixed"><h4>By Android4Health</h4></div>
+        </div>
+    </body>
 </html>
+ 
+<script>
+    (function($) {
+        var runGPS = 0;
+        $('#btn_start').click(function() {
+            $("#state").text('Running');
+            runGPS = 1;
+        });
+        $('#btn_stop').click(function() {
+            $("#state").text('Paused');
+            runGPS = 0;
+        });
+        var timer = setInterval(function() {
+            if (runGPS == 1) {
+                navigator.geolocation.getCurrentPosition(function(pos)                {
+                    date = new Date();
+                    $("#time").text(date);
+                    var lat = pos.coords.latitude;
+                    var lng = pos.coords.longitude;
+                    $("#lat").text(lat);
+                    $("#lng").text(lng);
+                    var t = date + " lat:" + lat + "lng:" + lng + "<br>";
+                    $("#out_put").append(t);
+                });
+            }
+        }, 1000);
+    })(jQuery);
+</script>
