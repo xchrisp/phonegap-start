@@ -1,30 +1,51 @@
-<!DOCTYPE html>
-<html>
-<head>
-<style>
-div {
-position: relative;
-background-color: #abc;
-width: 40px;
-height: 40px;
-float: left;
-margin: 5px;
+<!DOCTYPE HTML>
+<HTML>
+<HEAD>
+  <META CHARSET="UTF-8">
+  <TITLE>ตำแหน่งปัจจุบันของฉัน</TITLE>
+  <SCRIPT SRC="mymodernizr.js"></SCRIPT>
+</HEAD>
+<BODY>
+<SCRIPT>
+var watchId = null;
+function traceMyLocation() {
+   if (Modernizr.geolocation) {
+      watchId = navigator.geolocation.watchPosition(successCallbackFunc, errorCallbackFunc);
+   } else {
+      alert("เว็บบราวเซอร์ของคุณไม่รองรับการทำงานของ Geolocation API");
+   }
 }
-</style>
-<script src="http://code.jquery.com/jquery-latest.js"></script>
-</head>
-<body>
-<p><button id="go">Run »</button></p>
-<div class="block"></div>
-<script>
 
-function test() {
-$(".block").animate({left: "+=50", opacity: 1}, 500 );
-   setTimeout(mycode, 2000);
-};
-$( "#go" ).click(function(){
-test();
-});
-</script>
-</body>
-</html>
+function successCallbackFunc(position) {
+   var latitude = position.coords.latitude;
+   var longitude = position.coords.longitude;
+   var latTxt = document.getElementById("latitudeTxt");
+   latTxt.value = latitude;
+   var longTxt = document.getElementById("longitudeTxt");
+   longTxt.value = longitude;
+}
+
+function errorCallbackFunc(error) {
+   var errorDesc = ["เกิดข้อผิดพลาดที่ไม่ทราบสาเหตุ", "ผู้ใช้งานไม่อนุญาตให้เปิดเผยตำแหน่งพิกัดปัจจุบัน", "ไม่สามารถค้นหาตำแหน่งพิกัดได้", "Timeout"];
+   var errorMsg = errorDesc[error.code];
+   var div = document.getElementById("errorLabel");
+   div.innerHTML = errorMsg;
+}
+function stopTracing() {
+   if( watchId != null ) {
+      navigator.geolocation.clearWatch(watchId);
+   }
+   var latTxt = document.getElementById("latitudeTxt");
+   latTxt.value = "";
+   var longTxt = document.getElementById("longitudeTxt");
+   longTxt.value = "";
+}
+</SCRIPT>
+<FORM>
+คุณอยู่ที่ละติจูด <INPUT TYPE="text" ID="latitudeTxt" SIZE="10"> ลองจิจูด <INPUT TYPE="text" ID="longitudeTxt" SIZE="10"><BR>
+<DIV ID="errorLabel" STYLE="color:red"></DIV><BR>
+<INPUT TYPE="button" NAME="startBtn" VALUE="ติดตามตำแหน่งปัจจุบัน" ONCLICK="traceMyLocation()">
+<INPUT TYPE="button" NAME="stopBtn" VALUE="ยกเลิกติดตามตำแหน่ง" ONCLICK="stopTracing()">
+</FORM>
+</BODY>
+</HTML>
