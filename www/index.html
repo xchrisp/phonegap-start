@@ -1,51 +1,63 @@
 <!DOCTYPE HTML>
 <HTML>
 <HEAD>
-  <META CHARSET="UTF-8">
-  <TITLE>ตำแหน่งปัจจุบันของฉัน</TITLE>
-  <SCRIPT SRC="mymodernizr.js"></SCRIPT>
+<META CHARSET="UTF-8">
+<TITLE>แผนที่ตำแหน่งของฉัน</TITLE>
+<SCRIPT SRC="mymodernizr.js"></SCRIPT>
+<SCRIPT SRC="http://maps.google.com/maps/api/js?sensor=false&region=TH"></SCRIPT>
+<STYLE>
+  HTML { height: 100% }
+	BODY { height: 100% }
+	#map_canvas { width: 70%; height: 70% }
+</STYLE>
 </HEAD>
 <BODY>
-<SCRIPT>
-var watchId = null;
-function traceMyLocation() {
-   if (Modernizr.geolocation) {
-      watchId = navigator.geolocation.watchPosition(successCallbackFunc, errorCallbackFunc);
-   } else {
-      alert("เว็บบราวเซอร์ของคุณไม่รองรับการทำงานของ Geolocation API");
-   }
-}
-
-function successCallbackFunc(position) {
-   var latitude = position.coords.latitude;
-   var longitude = position.coords.longitude;
-   var latTxt = document.getElementById("latitudeTxt");
-   latTxt.value = latitude;
-   var longTxt = document.getElementById("longitudeTxt");
-   longTxt.value = longitude;
-}
-
-function errorCallbackFunc(error) {
-   var errorDesc = ["เกิดข้อผิดพลาดที่ไม่ทราบสาเหตุ", "ผู้ใช้งานไม่อนุญาตให้เปิดเผยตำแหน่งพิกัดปัจจุบัน", "ไม่สามารถค้นหาตำแหน่งพิกัดได้", "Timeout"];
-   var errorMsg = errorDesc[error.code];
-   var div = document.getElementById("errorLabel");
-   div.innerHTML = errorMsg;
-}
-function stopTracing() {
-   if( watchId != null ) {
-      navigator.geolocation.clearWatch(watchId);
-   }
-   var latTxt = document.getElementById("latitudeTxt");
-   latTxt.value = "";
-   var longTxt = document.getElementById("longitudeTxt");
-   longTxt.value = "";
-}
-</SCRIPT>
-<FORM>
 คุณอยู่ที่ละติจูด <INPUT TYPE="text" ID="latitudeTxt" SIZE="10"> ลองจิจูด <INPUT TYPE="text" ID="longitudeTxt" SIZE="10"><BR>
-<DIV ID="errorLabel" STYLE="color:red"></DIV><BR>
-<INPUT TYPE="button" NAME="startBtn" VALUE="ติดตามตำแหน่งปัจจุบัน" ONCLICK="traceMyLocation()">
-<INPUT TYPE="button" NAME="stopBtn" VALUE="ยกเลิกติดตามตำแหน่ง" ONCLICK="stopTracing()">
-</FORM>
+<DIV ID="errorLabel" STYLE="color:red"></DIV>
+  <BR><BR><DIV ID="map_canvas"></DIV>
+<SCRIPT>
+function getMyLocation() {
+    if (Modernizr.geolocation) {
+      navigator.geolocation.getCurrentPosition(successCallbackFunc);
+    } else {
+       alert("เว็บบราวเซอร์ของคุณไม่รองรับการทำงานของ Geolocation API");
+    }
+}
+function successCallbackFunc(position) {
+    var latitude = position.coords.latitude;
+    var longitude = position.coords.longitude;
+    var latTxt = document.getElementById("latitudeTxt");
+    latTxt.value = latitude;
+    var longTxt = document.getElementById("longitudeTxt");
+    longTxt.value = longitude;
+
+   var latlng = new google.maps.LatLng(latitude, longitude);
+   var myOptions = {
+      zoom: 15,
+      center: latlng,
+      mapTypeId: google.maps.MapTypeId.ROADMAP
+   };
+
+   map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+   map.setCenter(latlng);
+
+   var marker = new google.maps.Marker({
+      map: map, 
+      position: latlng,
+      title : 'ตำแหน่งปัจจุบัน'
+   });
+
+   var contentString = '<DIV>'+'<H3>ตำแหน่งปัจจุบันของคุณ</H3></DIV>';
+
+   var infowindow = new google.maps.InfoWindow({
+      content: contentString
+   });
+
+   google.maps.event.addListener(marker, 'click', function() {
+      infowindow.open(map,marker);
+   });
+}
+getMyLocation();
+</SCRIPT>
 </BODY>
 </HTML>
