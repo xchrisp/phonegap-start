@@ -1,59 +1,126 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html>
-    <head>
-        <meta charset="utf-8">
-        <meta name=viewport content="user-scalable=no,width=device-width" />
-        <link rel="stylesheet" href="http://code.jquery.com/mobile/1.3.1/jquery.mobile-1.3.1.min.css" />
-        <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
-        <script src="http://code.jquery.com/mobile/1.3.1/jquery.mobile-1.3.1.min.js"></script>
-    </head>
-    <body>
-        <div data-role=page id=home>
-            <div data-role=header data-theme="b"><h1>Map GPS</h1></div>
- 
-            <div data-role=content>
-                <span> สถานะ : </span> <span id=state></span> <br />
-                <span> เวลา : </span> <span id=time></span> <br />
-                <span> Latitude : </span> <span id=lat></span> <br />
-                <span> Longitude : </span> <span id=lng></span> <br />
-            </div>
-            <div align="center">
-                <input data-theme="c" type="button" name="btn_start" value="Start" id="btn_start" data-inline="true" data-icon="check">
-                <input data-theme="e" type="button" name="btn_stop" value="Stop" id="btn_stop" data-inline="true" data-icon="delete">
-            </div>
-            <div align="center">
-                <div id="out_put" style="width:99%; height:300px; overflow:scroll; border:1px solid #000;"></div>
-            </div>
-            <br>
-             <div data-role=footer data-theme="b" data-position="fixed"><h4>By xChrisp</h4></div>
-        </div>
-    </body>
-</html>
- 
-<script>
-    (function($) {
-        var runGPS = 0;
-        $('#btn_start').click(function() {
-            $("#state").text('Running');
-            runGPS = 1;
-        });
-        $('#btn_stop').click(function() {
-            $("#state").text('Paused');
-            runGPS = 0;
-        });
-        var timer = setInterval(function() {
-            if (runGPS == 1) {
-                navigator.geolocation.getCurrentPosition(function(pos)                {
-                    date = new Date();
-                    $("#time").text(date);
-                    var lat = pos.coords.latitude;
-                    var lng = pos.coords.longitude;
-                    $("#lat").text(lat);
-                    $("#lng").text(lng);
-                    var t = date + " lat:" + lat + "lng:" + lng + "<br>";
-                    $("#out_put").append(t);
-                });
-            }
-        }, 1000);
-    })(jQuery);
+<head>
+<meta charset="utf-8">
+<title>RunforHealth</title>
+
+
+<link rel="stylesheet" href="jquery.mobile-1.3.1.min.css">
+<link rel="stylesheet" href="jquery.mobile.structure-1.3.1.css">
+<script src="jquery-1.9.0.js"></script>
+<script src="jquery.mobile-1.3.1.min.js"></script>
+<script type="text/javascript" charset="utf-8">
+var ms = 0;
+var state = 0;
+
+function startstop() {
+if (state == 0) {
+state = 1;
+then = new Date();
+then.setTime(then.getTime() - ms);
+} 
+else {
+state = 0;
+now = new Date();
+ms = now.getTime() - then.getTime();
+
+hours = Math.floor(ms%(1000 * 60 * 60 * 24)/(1000 * 60 * 60));
+if (hours < 10)
+hours = "0" + hours
+
+minutes = Math.floor((ms%(1000 * 60 * 60))/(1000 * 60));
+if (minutes < 10)
+minutes = "0" + minutes
+
+seconds = Math.floor((ms%(1000 * 60))/1000);
+if (seconds < 10)
+seconds = "0" + seconds
+
+//miniseconds = Math.floor(ms%1000);
+//if (miniseconds < 10)
+//miniseconds = "0" + minisecoubds
+
+document.all('timer').innerHTML = '<h1>'+hours+':'+minutes+':'+seconds+'</h1>';
+}
+}
+
+function swreset() {
+state = 0;
+ms = 0;
+document.all('timer').innerHTML = '<h1>00:00:00:000</h1>';
+}
+
+function display() {
+setTimeout("display();", 500);
+if (state == 1) {
+now = new Date();
+ms = now.getTime() - then.getTime();
+hours = Math.floor(ms%(1000 * 60 * 60 * 24)/(1000 * 60 * 60));
+if (hours < 10)
+hours = "0" + hours
+
+minutes_divisor = ms%(1000 * 60 * 60);
+minutes = Math.floor(minutes_divisor/(1000 * 60));
+if (minutes < 10)
+minutes = "0" + minutes
+
+seconds_divisor = ms%(1000 * 60);
+seconds = Math.floor(seconds_divisor/1000);
+if (seconds < 10)
+seconds = "0" + seconds
+
+//miniseconds = Math.floor(ms%1000);
+//if (miniseconds < 10)
+//miniseconds = "0" + minisecoubds
+
+document.all('timer').innerHTML = '<h1>'+hours+':'+minutes+':'+seconds+'</h1>';
+}
+}
 </script>
+
+</head>
+
+<body onLoad="display();" style="background: #FFFFFF;">
+
+<div data-role="page" id="page" >
+
+<div data-role="header" align="center">
+<h1>RunforHealth</h1>
+</div><br><br>
+<table border="0" cellspacing="0" cellpadding="0" align="CENTER">
+
+<form NAME="stpw">
+<tr>
+<td>
+
+
+
+<h4>Time&nbsp;:&nbsp;</h4>
+
+
+
+</td>
+
+
+
+<td>
+<div id="timer" class="logininput" align="center"><h1>00:00:00</h1></div>
+
+
+
+</td>
+</tr>
+<tr>
+<td colspan="2">
+<input TYPE="BUTTON" Name="ssbutton" VALUE="Start/Stop" onClick="startstop()">
+<input TYPE="BUTTON" NAME="reset" VALUE="Reset" onClick="swreset()">
+</form>
+
+
+
+</td>
+</tr>
+</table>
+</div>
+</body>
+</html>
